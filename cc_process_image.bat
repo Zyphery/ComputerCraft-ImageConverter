@@ -14,7 +14,10 @@ REM Prompt for custom palette usage
 set /p use_palette="Use custom palette? (yes/no): "
 
 REM Default palette value
-set palette="TEMP"
+set "palette="
+
+REM Enable delayed expansion
+setlocal enabledelayedexpansion
 
 REM If the user chooses to use a custom palette, prompt for input and validate it
 if /i "%use_palette%"=="yes" (
@@ -30,11 +33,19 @@ if /i "%use_palette%"=="yes" (
     set palette=%custom_palette%
 ) else (
     REM Use a temporary file to capture the output of image_palette.py
-    for /f "tokens=*" %%i in ('python3 "%dir%image_palette.py" "%image_path%"') do set palette=%%i
+    for /f %%i in ('python3 "%dir%image_palette.py" "%image_path%"') do (
+        set "palette=%%i"
+    )
+
+    REM Print the generated palette if not using custom palette
+    echo Generated palette: !palette!
 )
 
+REM End delayed expansion
+endlocal
+
 REM Prompt for chunk size
-set /p chunk_size="Enter the chunk size (format NxM): "
+set /p chunk_size="Enter the chunk size (format WxH): "
 
 REM Run image_convert.py with the provided arguments
 python3 "%dir%image_convert.py" "%image_path%" "%palette%" "%chunk_size%"

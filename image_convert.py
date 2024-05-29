@@ -1,22 +1,13 @@
 from PIL import Image
 
-def compare_hex_color(hex_color, hex_string):
-    def hex_to_rgb(hex_color):
-        return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
-
-    def rgb_distance(color1, color2):
-        return sum((c1 - c2) ** 2 for c1, c2 in zip(color1, color2))
-
-    hex_color = hex_color.lower()
-    rgb_color = hex_to_rgb(hex_color)
-    hex_parts = [hex_string[i:i+6] for i in range(0, len(hex_string), 6)]
-    
-    closest_color = min(hex_parts, key=lambda part: rgb_distance(hex_to_rgb(part.lower()), rgb_color))
-    closest_index = hex_parts.index(closest_color)
-    return format(closest_index, 'x')
+def compare_hex_color(original_hex, long_hex):
+    original_int = int(original_hex, 16)
+    filtered_hex_tuples = ((int(long_hex[i:i+6], 16), long_hex[i:i+6]) for i in range(0, len(long_hex), 6) if len(long_hex[i:i+6]) == 6)
+    closest_hex = min(filtered_hex_tuples, key=lambda x: (abs(original_int - x[0]), -x[0]))
+    return closest_hex[1]
 
 def hex_to_rgb(hex_color):
-    return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+    return tuple(int(hex_color[i:i+2], 16) for i in (1, 3, 5))
 
 def get_chunk_data(img, box, color_palette):
     chunk_output = []
@@ -24,8 +15,7 @@ def get_chunk_data(img, box, color_palette):
     rgb_data = list(region.getdata())
 
     for pixel in rgb_data:
-        avg_color = int(sum(pixel) / len(pixel))
-        hex_color = format(avg_color, '02x') * 3
+        hex_color = "#{:02x}{:02x}{:02x}".format(*pixel)
         closest_index = compare_hex_color(hex_color, color_palette)
         chunk_output.append(closest_index)
 

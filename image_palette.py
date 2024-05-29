@@ -38,7 +38,7 @@ def get_palette(image_path):
 if __name__ == "__main__":
     import sys
     if len(sys.argv) != 2:
-        print("Usage: python find_palette.py <path_to_image>")
+        print("Usage: python image_palette.py <path_to_image>")
         sys.exit(1)
 
     image_path = sys.argv[1]
