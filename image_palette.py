@@ -31,9 +31,9 @@ def get_palette(image_path):
     # Move the darkest and brightest colors to the start and end of the list
     hex_colors.remove(darkest)
     hex_colors.remove(brightest)
-    hex_colors = [darkest] + hex_colors + [brightest]
+    hex_colors = ''.join([darkest] + hex_colors + [brightest])
     
-    return hex_colors
+    return ''.join([hex_colors[i:i+6] for i in range(0, len(hex_colors), 6)][::-1])
 
 if __name__ == "__main__":
     import sys

@@ -41,13 +41,13 @@ if /i "%use_palette%"=="yes" (
     echo Generated palette: !palette!
 )
 
-REM End delayed expansion
-endlocal
-
 REM Prompt for chunk size
 set /p chunk_size="Enter the chunk size (format WxH): "
 
 REM Run image_convert.py with the provided arguments
 python3 "%dir%image_convert.py" "%image_path%" "%palette%" "%chunk_size%"
+
+REM End delayed expansion
+endlocal
 
 pause

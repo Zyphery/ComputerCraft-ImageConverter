@@ -1,13 +1,40 @@
 from PIL import Image
 
+def euclidean_distance(rgb1, rgb2):
+    return sum((a - b) ** 2 for a, b in zip(rgb1, rgb2)) ** 0.5
+
 def compare_hex_color(original_hex, long_hex):
-    original_int = int(original_hex, 16)
-    filtered_hex_tuples = ((int(long_hex[i:i+6], 16), long_hex[i:i+6]) for i in range(0, len(long_hex), 6) if len(long_hex[i:i+6]) == 6)
-    closest_hex = min(filtered_hex_tuples, key=lambda x: (abs(original_int - x[0]), -x[0]))
-    return closest_hex[1]
+    original_rgb = hex_to_rgb(original_hex.lstrip('#'))
+    palette = [long_hex[i:i+6] for i in range(0, len(long_hex), 6)]
+    
+    def color_distance(hex_color):
+        return euclidean_distance(original_rgb, hex_to_rgb(hex_color))
+    
+    closest_index = min(range(len(palette)), key=lambda i: color_distance(palette[i]))
+    return hex(closest_index)[2:]
+
+#def compare_hex_color(original_hex, long_hex):
+#    if original_hex.startswith("#"):
+#        original_hex = original_hex[1:]
+#    original_int = int(original_hex, 16)
+
+    # Generate tuples of (integer value, hex string)
+#    filtered_hex_tuples = [
+#        (int(long_hex[i:i+6], 16), long_hex[i:i+6])
+#        for i in range(0, len(long_hex), 6)
+#        if len(long_hex[i:i+6]) == 6
+#    ]
+
+#    if not filtered_hex_tuples:
+#        raise ValueError("The long_hex string does not contain valid 6-character hex codes.")
+
+    # Find the closest hex value
+#    closest_hex = min(filtered_hex_tuples, key=lambda x: (abs(original_int - x[0]), -x[0]))
+
+#    return closest_hex[1]
 
 def hex_to_rgb(hex_color):
-    return tuple(int(hex_color[i:i+2], 16) for i in (1, 3, 5))
+    return tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
 
 def get_chunk_data(img, box, color_palette):
     chunk_output = []
@@ -59,16 +86,10 @@ if __name__ == "__main__":
 
     path_to_image = sys.argv[1]
     color_palette = sys.argv[2]
+
+    if len(color_palette) != 96:
+        print("Color palette must be 96 characters in length!")
+        sys.exit(1)
+
     chunks_x, chunks_y = map(int, sys.argv[3].split('x'))
     process_image(path_to_image, color_palette, chunks_x, chunks_y)
-
-
-
-
-
-
-
-
-
-
-
