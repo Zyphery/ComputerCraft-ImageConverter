@@ -81,7 +81,7 @@ if __name__ == "__main__":
     import sys
 
     if len(sys.argv) != 4:
-        print("Usage: python3 image_converter2.py <path_to_image> <color_palette> <chunks_x>x<chunks_y>")
+        print("Usage: python image_converter.py <path_to_image> <color_palette> <chunks_x>x<chunks_y>")
         sys.exit(1)
 
     path_to_image = sys.argv[1]
